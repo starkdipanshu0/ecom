@@ -5,6 +5,7 @@
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "env": ["MEDUSA_BACKEND_URL", "REVALIDATE_SECRET", "DATABASE_URL", "REDIS_URL", "JWT_SECRET", "COOKIE_SECRET", "STORE_CORS", "ADMIN_CORS", "AUTH_CORS", "AUTH_MFA_ENCRYPTION_KEY"],
       "outputs": [".next/**", "!.next/cache/**", "!.next/dev/**", ".medusa/**", "dist/**"]
     },
     "start": {
