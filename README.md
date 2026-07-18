@@ -1,159 +1,41 @@
-# Turborepo starter
+# ecom
 
-This Turborepo starter is maintained by the Turborepo core team.
+Turborepo + pnpm monorepo for a Medusa v2 e-commerce stack.
 
-## Using this example
+## Apps
 
-Run the following command:
+| App | Path | Port | What it is |
+| --- | --- | --- | --- |
+| `backend` | `apps/backend` | 9000 | Medusa v2 server — the **admin panel is built in** at http://localhost:9000/app |
+| `storefront` | `apps/storefront` | 8000 | Official Next.js starter storefront |
 
-```sh
-npx create-turbo@latest
-```
+Shared config packages live in `packages/` (`@repo/eslint-config`, `@repo/typescript-config`).
 
-## What's inside?
-
-This Turborepo includes the following packages/apps:
-
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
+## Commands (run from repo root)
 
 ```sh
-cd my-turborepo
-turbo build
+pnpm install          # install everything
+pnpm dev              # run backend + storefront together (turbo)
+pnpm backend:dev      # run only the Medusa server
+pnpm storefront:dev   # run only the storefront
+pnpm build            # build all apps
 ```
 
-Without global `turbo`, use your package manager:
+## Database (NeonDB) — already configured
+
+`apps/backend/.env` holds the Neon `DATABASE_URL` (pooled endpoint). Migrations have been run and
+the starter's built-in seed (`src/migration-scripts/initial-data-seed.ts`) auto-created demo data:
+a Europe region (dk, fr, de, it, es, se, gb), 4 demo products with inventory, a Default Sales
+Channel, and a publishable API key (already wired into `apps/storefront/.env.local`).
+
+Useful commands:
 
 ```sh
-cd my-turborepo
-npx turbo build
-pnpm dlx turbo build
-pnpm exec turbo build
+pnpm --filter backend exec medusa db:migrate                                # run new migrations
+pnpm --filter backend exec medusa user -e you@example.com -p yourpassword   # add an admin user
+pnpm --filter backend exec medusa exec ./src/scripts/get-publishable-key.ts # print API keys
 ```
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo build --filter=docs
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-```
-
-### Develop
-
-To develop all apps and packages, run the following command:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo dev
-```
-
-Without global `turbo`, use your package manager:
-
-```sh
-cd my-turborepo
-npx turbo dev
-pnpm exec turbo dev
-pnpm exec turbo dev
-```
-
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo dev --filter=web
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
-
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo login
-```
-
-Without global `turbo`, use your package manager:
-
-```sh
-cd my-turborepo
-npx turbo login
-pnpm exec turbo login
-pnpm exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo link
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo link
-pnpm exec turbo link
-pnpm exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+> Tip: if `db:migrate` fails with `ECONNRESET`, Neon's pooler dropped the connection mid-DDL.
+> Re-run it with `DATABASE_URL` pointing at the **direct** endpoint (remove `-pooler` from the
+> host) — migrations resume where they left off. The pooled URL is fine for the running app.
